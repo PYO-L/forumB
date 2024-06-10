@@ -22,7 +22,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> userData = userRepository.findByUsername(username);
 
-        return userData.map(CustomUserDetails::new)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        // 사용자를 찾지 못하면 예외를 던집니다.
+        User user = userData.orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+
+        return new CustomUserDetails(user);
     }
 }
