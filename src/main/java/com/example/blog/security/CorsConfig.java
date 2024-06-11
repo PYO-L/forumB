@@ -12,7 +12,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000","http://bucketpyo.s3-website.ap-northeast-2.amazonaws.com/register")
+                .allowedOrigins("http://localhost:3000","http://bucketpyo.s3-website.ap-northeast-2.amazonaws.com/")
                 .allowedMethods("*")
                 .allowedHeaders("*")
                 .allowCredentials(true);
