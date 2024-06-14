@@ -13,7 +13,8 @@ public class CorsConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000","http://forumfr.s3-website.ap-northeast-2.amazonaws.com","https://d3v7vlgblk96a0.cloudfront.net/login")
-                .allowedMethods("*")
+                .allowedMethods("GET","POST","PUT","DELETE","OPTIONS")
+                .exposedHeaders("location")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }

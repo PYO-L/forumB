@@ -1,8 +1,13 @@
 package com.example.blog.model;
 
 import jakarta.persistence.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Post {
@@ -11,6 +16,45 @@ public class Post {
     private Long id;
     private String title;
     private String content;
+    private LocalDateTime createdAt;
+    private int views;
+    private String imageUrl;
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    @ElementCollection
+    private Set<Long> viewedUsers = new HashSet<>();
+
+    // Getters and Setters
+    public Set<Long> getViewedUsers() {
+        return viewedUsers;
+    }
+
+    public void setViewedUsers(Set<Long> viewedUsers) {
+        this.viewedUsers = viewedUsers;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public int getViews() {
+        return views;
+    }
+
+    public void setViews(int views) {
+        this.views = views;
+    }
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;

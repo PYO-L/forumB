@@ -7,8 +7,11 @@ import com.example.blog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -29,17 +32,24 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public PostDTO getPostById(@PathVariable("id") Long id) {
-
-        return postService.getPostById(id);
+    public PostDTO getPostById(@PathVariable("id") Long id, Principal principal) {
+        User user = userRepository.findByUsername(principal.getName()).orElseThrow(() -> new RuntimeException("User not found"));
+        return postService.getPostById(id, user);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PostDTO createPost(@RequestBody PostDTO postDTO, Principal principal) {
+    public PostDTO createPost(@RequestParam("title") String title,
+                              @RequestParam("content") String content,
+                              @RequestParam("createdAt") String createdAt,
+                              @RequestParam(value = "image", required = false) MultipartFile image,
+                              Principal principal) {
         User user = userRepository.findByUsername(principal.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        return postService.createPost(postDTO,user);
+
+        // Convert String to LocalDateTime
+        LocalDateTime parsedDateTime = LocalDateTime.parse(createdAt, DateTimeFormatter.ISO_DATE_TIME);
+        return postService.createPost(title, content, parsedDateTime, image, user);
     }
 
     @PutMapping("/{id}")

@@ -1,10 +1,22 @@
 package com.example.blog.dto;
 
+import java.time.LocalDateTime;
+
 public class CommentDTO {
     private Long id;
     private String content;
     private UserDTO user;
     private String username;
+
+    private LocalDateTime createdAt;
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
     public String getUsername() {
         return username;

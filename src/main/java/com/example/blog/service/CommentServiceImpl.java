@@ -75,6 +75,7 @@ public class CommentServiceImpl implements CommentService {
     private CommentDTO convertToDTO(Comment comment) {
         CommentDTO commentDTO = new CommentDTO();
         BeanUtils.copyProperties(comment, commentDTO);
+        commentDTO.setCreatedAt(comment.getCreatedAt());
         if(comment.getUser() != null) {
             commentDTO.setUsername(comment.getUser().getUsername());
         }

@@ -3,6 +3,8 @@ package com.example.blog.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class Comment {
     @Id
@@ -10,6 +12,15 @@ public class Comment {
     private Long id;
 
     private String content;
+    private LocalDateTime createdAt;
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 
     @ManyToOne
     @JoinColumn(name = "post_id")
