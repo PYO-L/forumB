@@ -9,14 +9,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +26,16 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private ImageService imageService;
+
+    @Override
+    public PostDTO likePost(Long id, User user) {
+        Post post = postRepository.findById(id).orElseThrow(() -> new RuntimeException("Post not found"));
+        if(post.getLikedUsers().add(user.getId())) {
+            post.setLikes(post.getLikes() + 1); // 좋아요 수 증가
+            postRepository.save(post);
+        }
+        return convertToDTO(post);
+    }
 
     @Override
     public List<PostDTO> getAllPosts() {
@@ -48,17 +54,20 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDTO createPost(String title, String content, LocalDateTime createdAt, MultipartFile upImage, User user) {
+    public PostDTO createPost(String title, List<String> contents, LocalDateTime createdAt, List<MultipartFile> images, User user) {
         Post post = new Post();
         post.setTitle(title);
-        post.setContent(content);
+        post.setContents(contents);
         post.setCreatedAt(createdAt);
         post.setUser(user);
 
-        MultipartFile image = upImage;
-        if (image != null && !image.isEmpty()) {
-            String imageUrl = imageService.saveImage(image);
-            post.setImageUrl(imageUrl);
+        try {
+            if (images != null && !images.isEmpty()) {
+                List<String> imageUrls = imageService.saveImage(images); // 이미지 저장 후 파일명 반환
+                post.setImageUrls(imageUrls); // 저장된 이미지 URL을 Post 객체에 설정
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to store image", e);
         }
 
         Post savedPost = postRepository.save(post);
@@ -93,7 +102,8 @@ public class PostServiceImpl implements PostService {
         BeanUtils.copyProperties(post, postDTO);
         postDTO.setCreatedAt(post.getCreatedAt()); // 생성일 설정
         postDTO.setViews(post.getViews());
-        postDTO.setImageUrl(post.getImageUrl());
+        postDTO.setImageUrls(post.getImageUrls());
+        postDTO.setLikes(post.getLikes());
         if(post.getUser() != null){
             postDTO.setUsername(post.getUser().getUsername());
         }

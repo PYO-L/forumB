@@ -24,6 +24,13 @@ public class PostController {
     @Autowired
     private UserRepository userRepository;
 
+    @PostMapping("/{id}/like")
+    public PostDTO likePost(@PathVariable("id") Long id, Principal principal) {
+        User user = userRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return postService.likePost(id, user);
+    }
+
     @GetMapping
     public List<PostDTO> getAllPosts(Principal principal) {
         User user = userRepository.findByUsername(principal.getName())
@@ -40,16 +47,15 @@ public class PostController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public PostDTO createPost(@RequestParam("title") String title,
-                              @RequestParam("content") String content,
+                              @RequestParam("contents") List<String> contents,
                               @RequestParam("createdAt") String createdAt,
-                              @RequestParam(value = "image", required = false) MultipartFile image,
+                              @RequestParam(value = "images", required = false) List<MultipartFile> images,
                               Principal principal) {
         User user = userRepository.findByUsername(principal.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
         // Convert String to LocalDateTime
         LocalDateTime parsedDateTime = LocalDateTime.parse(createdAt, DateTimeFormatter.ISO_DATE_TIME);
-        return postService.createPost(title, content, parsedDateTime, image, user);
+        return postService.createPost(title, contents, parsedDateTime, images, user);
     }
 
     @PutMapping("/{id}")

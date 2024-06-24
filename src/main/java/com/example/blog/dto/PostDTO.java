@@ -11,13 +11,23 @@ import java.util.List;
 public class PostDTO {
     private Long id;
     private String title;
-    private String content;
+    private List<String> contents;
     private LocalDateTime createdAt;
     private int views;
     private List<CommentDTO> comments = new ArrayList<>();
     private UserDTO user;
     private String username;
-    private String imageUrl;
+    private List<String> imageUrls;
+
+    private int likes;
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
 
     private MultipartFile image;
 
@@ -29,12 +39,12 @@ public class PostDTO {
         this.image = image;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public List<String> getImageUrls() {
+        return imageUrls;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -83,12 +93,12 @@ public class PostDTO {
         this.title = title;
     }
 
-    public String getContent() {
-        return content;
+    public List<String> getContents() {
+        return contents;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setContents(List<String> contents) {
+        this.contents = contents;
     }
 
     public List<CommentDTO> getComments() {
